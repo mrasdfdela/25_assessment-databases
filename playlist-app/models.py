@@ -10,7 +10,7 @@ class Playlist(db.Model):
     __tablename__ = 'playlists'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.Text, nullable=False)
-    username = db.Column(db.Text)
+    description = db.Column(db.Text)
 
 
 class Song(db.Model):
