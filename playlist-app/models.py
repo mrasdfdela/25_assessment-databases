@@ -26,10 +26,10 @@ class PlaylistSong(db.Model):
     __tablename__ = 'playlists_songs'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     playlist_id = db.Column(db.Integer, db.ForeignKey('playlists.id'))
-    username = db.Column(db.Integer, db.ForeignKey('songs.id'))
+    song_id = db.Column(db.Integer, db.ForeignKey('songs.id'))
 
-    playlist = db.relationship('Playlist', backref='playlist_song')
-    song = db.relationship('Song', backref='playlist_song')
+    playlist = db.relationship('Playlist', backref='playlist_songs')
+    song = db.relationship('Song', backref='playlist_songs')
 
 
 # DO NOT MODIFY THIS FUNCTION

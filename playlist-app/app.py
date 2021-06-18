@@ -44,7 +44,11 @@ def show_all_playlists():
 @app.route("/playlists/<int:playlist_id>")
 def show_playlist(playlist_id):
     """Show detail on specific playlist."""
-
+    playlist = Playlist.query.get(playlist_id)
+    playlist_songs = PlaylistSong.query.filter_by(playlist_id=playlist_id).all()
+    if playlist:
+        return render_template('/playlist.html',playlist=playlist,playlist_songs=playlist_songs)
+    return redirect('/playlists')
     # ADD THE NECESSARY CODE HERE FOR THIS ROUTE TO WORK
 
 
@@ -84,7 +88,12 @@ def show_all_songs():
 @app.route("/songs/<int:song_id>")
 def show_song(song_id):
     """return a specific song"""
+    song = Song.query.get(song_id)
+    playlist_songs = PlaylistSong.query.filter_by(song_id=song_id).all()
 
+    if song:
+        return render_template('/song.html',song=song,playlist_songs=playlist_songs)
+    return redirect('/songs')
     # ADD THE NECESSARY CODE HERE FOR THIS ROUTE TO WORK
 
 
@@ -121,14 +130,17 @@ def add_song_to_playlist(playlist_id):
 
     # Restrict form to songs not already on this playlist
 
-    curr_on_playlist = ...
-    form.song.choices = ...
+    curr_on_playlist = [ song.song_id for song in playlist.playlist_songs ]
+    song_list = Song.query.filter(Song.id.notin_(curr_on_playlist)).all()
+    form.song.choices = [ (song.id, song.title) for song in song_list ]
 
     if form.validate_on_submit():
 
           # ADD THE NECESSARY CODE HERE FOR THIS ROUTE TO WORK
-
-          return redirect(f"/playlists/{playlist_id}")
+        new_ps = PlaylistSong(playlist_id=playlist_id, song_id=form.song.data)
+        db.session.add(new_ps)
+        db.session.commit()
+        return redirect(f"/playlists/{playlist_id}")
 
     return render_template("add_song_to_playlist.html",
                              playlist=playlist,
